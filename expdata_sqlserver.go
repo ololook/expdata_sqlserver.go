@@ -4,12 +4,12 @@ import (
         _ "github.com/denisenkom/go-mssqldb"
         "log"
         "github.com/tealeg/xlsx"
-        "os"
-        "fmt"
+        "flag"
 )
+var strFlag = flag.String("sql","","")
+var filFlag = flag.String("file","","")
 func main() {
-        arg := os.Args[1]
-        fmt.Println(arg)
+        flag.Parse()
         db, err := sql.Open("mssql","server=hostip;port=port;user id=zhangyx;password=zhangyx;database=zhangyx")
         if err != nil {
                 log.Fatalf("Open database error: %s\n", err)
@@ -21,7 +21,7 @@ func main() {
                 log.Fatal(err)
         }
 
-        rows, err := db.Query(arg)
+        rows, err := db.Query(*strFlag)
         if err != nil {
                 log.Println(err)
         }
@@ -69,8 +69,9 @@ func main() {
                 log.Fatal(err)
         }
 
-        err = file.Save("test.xlsx")
+        err = file.Save(*filFlag + ".xlsx")
         if err != nil {
                 log.Printf(err.Error())
         }
 }
+
