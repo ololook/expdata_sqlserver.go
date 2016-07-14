@@ -10,6 +10,7 @@ var strFlag = flag.String("sql","","")
 var filFlag = flag.String("file","","")
 func main() {
         flag.Parse()
+        db, err := sql.Open("mssql","server=ip;port=port;user id=zhangyx;password=zhangyx;database=dbaname")
         if err != nil {
                 log.Fatalf("Open database error: %s\n", err)
         }
