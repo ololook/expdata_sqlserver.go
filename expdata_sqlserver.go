@@ -10,7 +10,6 @@ var strFlag = flag.String("sql","","")
 var filFlag = flag.String("file","","")
 func main() {
         flag.Parse()
-        db, err := sql.Open("mssql","server=hostip;port=port;user id=zhangyx;password=zhangyx;database=zhangyx")
         if err != nil {
                 log.Fatalf("Open database error: %s\n", err)
         }
@@ -45,33 +44,32 @@ func main() {
                 cell.Value = cols[i]
         }   
         buff := make([]interface{}, len(cols)) 
-        data := make([]string, len(cols))  
+        data := make([]sql.RawBytes, len(cols))  
         for i, _ := range buff {
-             buff[i] = &data[i]  
-        }
+                 buff[i] = &data[i]
+             }  
         for rows.Next() {
                 row = sheet.AddRow()
-                rows.Scan(buff...)
-                
+                rows.Scan(buff...) 
                 for _, col := range data {
-                   cell = row.AddCell()
-                   cell.Value = col
+                     if col==nil{
+                          cell = row.AddCell()
+                       // cell.Value ="zyx"
+                      } else {
+                      cell = row.AddCell()
+                      cell.Value = string(col)
+                    }
                 }
                 if err != nil {
                         log.Fatal(err)
                 }
-
-
         }
-
         err = rows.Err()
         if err != nil {
                 log.Fatal(err)
         }
-
         err = file.Save(*filFlag + ".xlsx")
         if err != nil {
                 log.Printf(err.Error())
         }
 }
-
